@@ -64,18 +64,20 @@ AdovecNotify.of(config);
         hoverHeight: 25,
         defaultHeight: 5,
         marginLeft: "37%",
+        delim: ["<<", ">>"],//Default: ["{{", "}}"]
         data: {} //This data will be applied to all data object in events.
     },
     events: []//List of events object.
 }
 //An Event object will be like:
 {
-    date: "{{date}}",//You can also input date, "alwayas", "never" or "else". "else" will be triggered only if no events match.
-    color: "{{color}}",
-    text: "Happy birthdy, {{ name }}!",
+    date: "<<date>>",//You can also input date, "alwayas", "never" or "else". "else" will be triggered only if no events match.
+    color: "<<color>>",
+    text: "Happy birthdy, << name >>!",
     aExtend:{// A bar contains <div>, <a>, <span>. <tag>Extend will extend attributes of <tag> element. for <tag> in ["a", "div", "span"]
-        href: "https://abu.com/{{link}}"
+        href: "https://abu.com/<<link>>"
     },
+    match: ["month", "date"],//Only matches date and month. Default: ["month", "date"]. You can give ["month"] to match month only.
     needsRender: ["date", "color", "text", "aExtend.href"],//Strings that needs to render.
     data: {
         date: "8-17",
@@ -97,11 +99,11 @@ AdovecNotify.of(config);
 AdovecNotify.helper(template, datas);
 //Example:
 template = {
-    date: "{{date}}",//You can also input date, "alwayas", "never" or "else". "else" will be triggered only if no events match.
-    color: "{{color}}",
-    text: "Happy birthdy, {{ name }}!",
+    date: "<<date>>",//You can also input date, "alwayas", "never" or "else". "else" will be triggered only if no events match.
+    color: "<<color>>",
+    text: "Happy birthdy, << name >>!",
     aExtend:{// A bar contains <div>, <a>, <span>. <tag>Extend will extend attributes of <tag> element. for <tag> in ["a", "div", "span"]
-        href: "https://abu.com/{{link}}"
+        href: "https://abu.com/<<link>>"
     },
     needsRender: ["date", "color", "text", "aExtend.href"],//Strings that needs to render.
 },

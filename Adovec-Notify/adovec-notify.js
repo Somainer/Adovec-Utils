@@ -24,9 +24,9 @@
             // Create <span> tag
             var span = document.createElement('span');
             span.setAttribute('style', 'opacity: 0;');
-            span.innerHTML = _.render(payload.text, payload.data);
+            span.innerHTML = payload.text;//_.render(payload.text, payload.data);
             span.style.marginLeft = payload.marginLeft || o.global.marginLeft || "37%";
-            aTag.style.color = payload.textColor || o.global.textColor || "";
+            span.style.color = payload.textColor || o.global.textColor || "";
             aTag.addEventListener("mouseenter", e => {
                 span.style.opacity = 100;
                 e.target.style.height = (o.global.hoverHeight || payload.hoverHeight)+"px";
@@ -57,11 +57,10 @@
         }
         o.global = o.global || {};
         _.deepExtend(o.global, defaults.global);
-        console.log(o);
         let opts = o.events;
         //Rendering Elements of needsRender
         opts.forEach(e => {
-            Object.assign(e.data, o.global.data);
+            e.data && Object.assign(e.data, o.global.data);
             (e.needsRender || []).forEach(structure => {
                 let target = e, prevTarget = e;//structure.split(".").reduce((a,b) => a[b], e);
                 let varMap = structure.split('.');
@@ -69,11 +68,11 @@
                     prevTarget = target;
                     target = target[s];
                 });
-                prevTarget[varMap[varMap.length - 1]] = _.render(target, e.data);
+                prevTarget[varMap[varMap.length - 1]] = _.render(target, e.data, e.global.delim);
             })
         });
-        console.log(opts);
-        let targets = opts.filter(d => _.sameDate(d.date, dat));
+        //console.log(opts);
+        let targets = opts.filter(d => _.sameDate(d.date, dat, d.match || o.global.match));
         this.targets = targets.length ? targets : opts.filter(d => d.date === "else");
         this.targets.forEach(e => this.createElement(e, o.global.element));
     }
@@ -94,7 +93,7 @@
         },
         procedure: (...args) => args.reduce((a,b) => b(a)),
         applyTo: (a, ...args) => args.forEach(f => f(a)),
-        sameDate: (a,b) => (a!=="never" && a!=="else") && (a==="always" || ["Month", "Date"].every(attr => equalsOn(x => x["get"+attr]())(new Date(a), b))),
+        sameDate: (a,b,m) => (a!=="never" && a!=="else") && (a==="always" || (m || ["Month", "Date"]).map(s => s.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())).every(attr => equalsOn(x => x["get"+attr]&&x["get"+attr]())(new Date(a), b))),
         render(str, obj, delim){// A naive template engine.
             //console.log("RENDER:",str, obj)
             delim = delim || ["{{", "}}"];
