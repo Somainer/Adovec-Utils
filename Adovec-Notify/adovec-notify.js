@@ -38,19 +38,19 @@
             this.aElement = aTag;
             this.divElement = divTag;
             this.spanElement = span;
-            ["div", "a", "span"].forEach(tag => _.deepExtend(this[tag+"Element"], payload[tag+"Extend"] || {}))
             this.aElement.style.cssText = _.render('\
-                background-color: {{ color }};\
-                background-size: cover;\
-                position: absolute;\
-                top: 0;\
-                left: 0;\
-                width: 100%;\
-                width: 100vw;\
-                height: {{defaultHeight}}px;\
-                z-index: 99999;\
-            ', Object.assign({color: payload.color, defaultHeight: o.global.defaultHeight}, payload.data))
-
+            background-color: {{ color }};\
+            background-size: cover;\
+            position: absolute;\
+            top: 0;\
+            left: 0;\
+            width: 100%;\
+            width: 100vw;\
+            height: {{defaultHeight}}px;\
+            z-index: 99999;\
+            ', Object.assign({color: payload.color, defaultHeight: o.global.defaultHeight}, payload.data));
+            
+            ["div", "a", "span"].forEach(tag => _.deepExtend(this[tag+"Element"], payload[tag+"Extend"] || {}));
             aTag.appendChild(span);
             divTag.appendChild(aTag);
             document.body.insertBefore(divTag, before || document.body.firstChild);
@@ -68,7 +68,7 @@
                     prevTarget = target;
                     target = target[s];
                 });
-                prevTarget[varMap[varMap.length - 1]] = _.render(target, e.data, e.global.delim);
+                prevTarget[varMap[varMap.length - 1]] = _.render(target, e.data, o.global.delim);
             })
         });
         //console.log(opts);
@@ -94,10 +94,14 @@
         procedure: (...args) => args.reduce((a,b) => b(a)),
         applyTo: (a, ...args) => args.forEach(f => f(a)),
         sameDate: (a,b,m) => (a!=="never" && a!=="else") && (a==="always" || (m || ["Month", "Date"]).map(s => s.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())).every(attr => equalsOn(x => x["get"+attr]&&x["get"+attr]())(new Date(a), b))),
-        render(str, obj, delim){// A naive template engine.
+        _render(str, obj, delim){// A naive template engine.
             //console.log("RENDER:",str, obj)
             delim = delim || ["{{", "}}"];
             return this.reduce(obj, (s, v, k) => s.replace(new RegExp(delim.join(`\\s*?${k}\\s*?`), "g"), v), str);
+        },
+        render(template, context, delim){// A not so naive template engine.
+            const funcTemplate = expr => `with(data || {}) {return (${expr});}`;
+            return template.replace(new RegExp((delim || ["{{", "}}"]).join("\\s*?(.*?)\\s*?"), "gm"), (_, expr) => (new Function("data", funcTemplate(expr)))(context));
         },
         extend(dst, src){
             this.forEach(src, (v, k) => dst[k] = dst[k] || v);

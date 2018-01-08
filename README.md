@@ -75,14 +75,13 @@ AdovecNotify.of(config);
     color: "<<color>>",
     text: "Happy birthdy, << name >>!",
     aExtend:{// A bar contains <div>, <a>, <span>. <tag>Extend will extend attributes of <tag> element. for <tag> in ["a", "div", "span"]
-        href: "https://abu.com/<<link>>"
+        href: "https://abu.com/<< name.split(' ').join('-') >>"
     },
     match: ["month", "date"],//Only matches date and month. Default: ["month", "date"]. You can give ["month"] to match month only.
     needsRender: ["date", "color", "text", "aExtend.href"],//Strings that needs to render.
     data: {
         date: "8-17",
         name: "Ezawa Tamiko",
-        link: "Ezawa-Tamiko",
         color: "black"// or #..., RGB(...) etc.
     }
 }
@@ -110,5 +109,7 @@ template = {
 datas = [
     {name: "Ezawa-Tamiko", date:"08-17", link: "Ezawa-Tamiko", color: "black"},
     {name: "Yazawa-Niko", date: "07-22", link: "niko", color: "pink"}
-]
+];
+//About AdovecNotify.utils.render(template, context, delim=["{{", "}}"])
+//Will replace expressions separated by delim, in the scope of context.
 ```
