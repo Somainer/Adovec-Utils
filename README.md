@@ -56,11 +56,11 @@ A tiny notify bar with a naive template engine.
 ```
 Then, configure it.
 ```JavaScript
-AdovecNotify.of(config);
-//config is a Object like:
+let notify = AdovecNotify.of(config);
+//config is an Object like:
 {
     global: {
-        element: null,
+        element: null,// Will insert before this element, default: document.body.firstChild
         hoverHeight: 25,
         defaultHeight: 5,
         marginLeft: "37%",
@@ -69,7 +69,11 @@ AdovecNotify.of(config);
     },
     events: []//List of events object.
 }
-//An Event object will be like:
+//Destroy:
+notify.destroy();
+```
+An Event object will be like:
+```JavaScript
 {
     date: "<<date>>",//You can also input date, "alwayas", "never" or "else". "else" will be triggered only if no events match.
     color: "<<color>>",
@@ -85,7 +89,35 @@ AdovecNotify.of(config);
         color: "black"// or #..., RGB(...) etc.
     }
 }
-//<=> Will be rendered as:
+```
+Schema date:
+Available options:
+
+- `always`: Literally, always.
+- `never`: Literally, never. // Who the hell will need this???
+- `{A date string or Date object}`: Anything that can be constructed by `new Date(date)`.
+- `else`: Will be triggered only if no events match.
+- `{function}`: A function takes one argument: new Date()
+
+Color: will be applied to CSS attribute: background.
+
+needsRender :array(string) Anything that needs to render. Also can be applied to nested objects.
+
+match :array(string) Date matches fields in this array will be accepted. Default: ["month", "date"]
+
+**Only avaliable when date is a string.**
+    
+    Example: ["month"] will only checks month.
+    It can be any string as long as ("get" + capitalize(match)) is a member(function) of Date object.
+    Implementation:
+        "month" -> (new Date(date)).getMonth() === (new Date()).getMonth()
+        "full year" -> (new Date(date)).getFullYear() === (new Date()).getFullYear()
+    So date: "always" can be replaced as match: []
+
+data: Will be the context of template.
+
+Thus, will be rendered as:
+```JavaScript
 {
     date: "8-17",
     color: "black",
@@ -94,7 +126,10 @@ AdovecNotify.of(config);
         href: "https://abu.com/Ezawa-Tamiko"
     }
 }
-//Events objects can also made by helper:
+```
+
+Events objects can also made by helper:
+```JavaScript
 AdovecNotify.helper(template, datas);
 //Example:
 template = {
@@ -110,6 +145,7 @@ datas = [
     {name: "Ezawa-Tamiko", date:"08-17", link: "Ezawa-Tamiko", color: "black"},
     {name: "Yazawa-Niko", date: "07-22", link: "niko", color: "pink"}
 ];
-//About AdovecNotify.utils.render(template, context, delim=["{{", "}}"])
-//Will replace expressions separated by delim, in the scope of context.
 ```
+    About AdovecNotify.utils.render(template, context, delim=["{{", "}}"])
+
+    This function will replace expressions separated by delim, in the scope of context.
