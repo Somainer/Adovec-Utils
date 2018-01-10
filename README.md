@@ -1,6 +1,6 @@
 # Adovec-Utils
 
-It now contains 2 micro scripts, progress and notify.
+It now contains 3 micro scripts, progress, notify and haishoku.
 
 ## Adovec Progress
 
@@ -149,3 +149,48 @@ datas = [
     About AdovecNotify.utils.render(template, context, delim=["{{", "}}"])
 
     This function will replace expressions separated by delim, in the scope of context.
+
+## Adovec Haishoku
+A tiny color changer, changing color of selected elements based on given image. 
+With RGBaster: https://github.com/briangonzalez/rgbaster.js
+
+### Usage
+
+```html
+<script src="https://adv-u.roselia.xyz/Adovec-Haishoku/adovec-haishoku.js"></script>
+<!-- or use minified file -->
+<script src="https://adv-u.roselia.xyz/Adovec-Haishoku/adovec-haishoku.min.js"></script>
+<!-- But notice Content-Security-Policy may prevent this script being run. -->
+```
+
+```JavaScript
+adovecHaishoku.apply(opts)
+//Defaults:
+{
+    image: null,
+    exclude: ['rgb(0,0,0)'],
+    target: "body",
+    changeText: false,
+    textColors: {
+        light: "#fff",
+        dark: "#000"
+    },
+    text: null
+}
+```
+## Fields:
+
+    image: An <img> element, Haishoku will get the domaint color of this element.
+
+    exclude: array(string) Will ignore colors in this array.
+
+    target: string Will apply the background-color to elements selected by it.
+
+    changeText: boolean Will change text colors according to image if true.
+
+    textColors: {
+        light: string,
+        dark: string
+    } Determine text colors. Will apply light color to text if image is dark.
+
+    text: string (= target if(!text)) Selector of texts.

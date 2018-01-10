@@ -15,14 +15,14 @@
         let _ = ADVB.utils;
         this.createElement = function(payload, before){
             //Create <div> tag
-            var divTag = document.createElement('div');
+            let divTag = document.createElement('div');
 
             // Create <a> tag
-            var aTag = document.createElement('a');
+            let aTag = document.createElement('a');
             aTag.setAttribute('target', '_blank');
 
             // Create <span> tag
-            var span = document.createElement('span');
+            let span = document.createElement('span');
             span.setAttribute('style', 'opacity: 0;');
             span.innerHTML = payload.text;//_.render(payload.text, payload.data);
             span.style.marginLeft = payload.marginLeft || o.global.marginLeft || "37%";
