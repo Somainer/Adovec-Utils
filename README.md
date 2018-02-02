@@ -1,6 +1,6 @@
 # Adovec-Utils
 
-It now contains 3 micro scripts, progress, notify and haishoku.
+It now contains 4 micro scripts, progress, notify, haishoku and lazyload.
 
 ## Adovec Progress
 
@@ -194,3 +194,65 @@ adovecHaishoku.apply(opts)
     } Determine text colors. Will apply light color to text if image is dark.
 
     text: string (= target if(!text)) Selector of texts.
+
+## Adovec LazyLoad
+
+Literally, a simple image lazy load plugin without any dependences.
+
+### Usage
+
+```html
+<script src="https://adv-u.roselia.xyz/Adovec-Lazyload/adovec-lazyload.js"></script>
+<!-- or use minified file -->
+<script src="https://adv-u.roselia.xyz/Adovec-Lazyload/adovec-lazyload.min.js"></script>
+<!-- But notice Content-Security-Policy may prevent this script being run. -->
+```
+
+```JavaScript
+let lazyload = AdovecLazyLoad.of(options);//or
+let lazyload = new AdovecLazyLoad(options);
+//Default options:
+defaults = {
+    load: true,
+    placeHolder: "",
+    renderPlaceHolder: false,
+    changePlaceHolder: true,
+    selector: "img",
+    delim: ["{{", "}}"],
+    prefix: "adovec",
+    onscrolledimg: null,
+    throttleRate: 200
+};
+```
+
+### Fields
+
+    load: Determine if doms will be analysed instantly after constructed.
+
+    placeHolder & renderPlaceHolder & changePlaceHolder & delim:
+
+        Image src place holder. Chage the img.src only if changePlaceHolder is true.
+        When rendering, will pass the img dom.
+        E.g. "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
+
+        or "https://dummyimage.com/{{ width }}x{{ height }}/000000/651fff.jpg&text={{ alt }}" & renderPlaceHolder = true
+    
+    selector: CSS selector such as "img" ".lazyload img"
+
+    prefix: field prefix
+
+        When the target image are scrolled into the page, its src will be changed to `${prefix}-src`.
+
+        When setting placeHolder, if `${prefix}-src` is not defined, `${prefix}-src` will be set to original src attribute.
+
+    onscrolledimg: call back function :: [img] => ()
+
+        An array of imgs in the screen will be passed to this function.
+        
+    throttleRate: minimum scanning threshold(ms). :: Number
+
+### Methods
+
+    lazyload.load() :: () -> () Re-analyse the document with same options.
+
+    lazyload.destroy() :: () -> ()
